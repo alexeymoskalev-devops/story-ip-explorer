@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# story-ip-explorer
 
-## Getting Started
+A [Next.js](https://nextjs.org) dashboard over the [`story-subgraph`](../story-subgraph) GraphQL API: ecosystem metrics plus an interactive IP **lineage explorer** (parent→derivative graph rendered with [Cytoscape](https://js.cytoscape.org/)).
 
-First, run the development server:
+It fulfils the "IP Graph Explorer" idea and complements [`story-ip-graph-mcp`](../story-ip-graph-mcp): the MCP server gives agents point-by-point on-chain reads, while this dashboard gives humans the aggregate metrics and the visual lineage view.
+
+## Two views
+
+### Overview (`/`)
+
+Metric cards plus leaderboard tables:
+
+- **IP assets**, **derivative links**, and **total royalty paid** metric cards. The first two are entity counts capped at 1000 and shown as `1000+` when the cap is hit (the subgraph is queried with `first: 1000`).
+- **Top IPs by derivatives** and **Royalty leaders** tables.
+
+### Explorer (`/explorer`)
+
+- Enter an `ipId` (a `0x…` 40-hex-char address).
+- See the **parent → derivative graph** for that IP, plus a **detail panel** with attached license terms and recent royalty payments.
+
+## Prerequisites
+
+A running `story-subgraph` GraphQL endpoint. Either:
+
+- **Local graph-node** — see the [`../story-subgraph`](../story-subgraph) README: `docker compose up -d`, then `graph create` / `graph deploy`, synced to chain head. The endpoint is then `http://localhost:8000/subgraphs/name/story-subgraph`.
+- **Hosted deployment** — point at any deployed `story-subgraph` GraphQL URL.
+
+## Setup
+
+1. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+2. Configure the subgraph endpoint:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+   Set `NEXT_PUBLIC_SUBGRAPH_URL` in `.env.local`. For a local graph-node:
+
+   ```
+   NEXT_PUBLIC_SUBGRAPH_URL=http://localhost:8000/subgraphs/name/story-subgraph
+   ```
+
+3. Run the dev server:
+
+   ```bash
+   npm run dev
+   ```
+
+   Then open:
+   - http://localhost:3000 — Overview
+   - http://localhost:3000/explorer — Explorer
+
+## Testing
+
+Unit tests cover the `validate` and `transform` pure functions:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm test        # vitest run
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Compile / production build:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Live smoke test
 
-## Learn More
+`scripts/smoke.mjs` is a no-browser, end-to-end check. It runs the explorer's actual `IP_LINEAGE` query against `NEXT_PUBLIC_SUBGRAPH_URL` and prints a known IP's lineage (parents, derivatives, attached terms, royalty payments):
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+NEXT_PUBLIC_SUBGRAPH_URL=http://localhost:8000/subgraphs/name/story-subgraph \
+  node scripts/smoke.mjs
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Override the target IP with `SMOKE_IP=0x…`. This confirms the explorer query path works against a live subgraph without spinning up a browser.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deploy
 
-## Deploy on Vercel
+Deploy on [Vercel](https://vercel.com/new). Set the `NEXT_PUBLIC_SUBGRAPH_URL` environment variable in the project settings to your subgraph endpoint.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Why not Dune?
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Story is not in Dune's chain catalog, so on-chain analytics cannot be served from Dune SQL. Instead, this dashboard reads from our own `story-subgraph` deployment.
+
+## Follow-up
+
+Time-series metrics (growth-over-time) need a `DailySnapshot` entity in `story-subgraph`. The underlying events are indexed, but they are not yet daily-aggregated, so v1 shows current-state snapshots only. Adding daily aggregation in the subgraph is the documented next step.
+
+## Demo
+
+> **TODO:** Record the demo screenshot here.
+>
+> Capture the Explorer lineage of `0x0b4df5a3d6dfe94dc8dc28f26006fa25638b351d`
+> (parent `0x9a90f1c5d4875181747c3585f01b5c065bea1f65`, license terms `1894`).
+
+## License
+
+MIT
