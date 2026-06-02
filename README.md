@@ -104,6 +104,18 @@ Live against a local `story-subgraph` indexing aeneid.
 
 ![Lineage explorer](./docs/explorer-lineage.png)
 
+## Part of a 4-repo Story Protocol contribution
+
+Built for the Story "AI × IP" direction, in two independent tracks:
+
+**Track A — agents**
+- [story-ip-graph-mcp](https://github.com/alexeymoskalev-devops/story-ip-graph-mcp) — MCP server: derivative/remix registration + IP-graph lineage reads
+- [story-ip-agent-demo](https://github.com/alexeymoskalev-devops/story-ip-agent-demo) — autonomous ElizaOS agent that drives the MCP server
+
+**Track B — data**
+- [story-subgraph](https://github.com/alexeymoskalev-devops/story-subgraph) — open-source The Graph subgraph indexing live Story Protocol
+- **story-ip-explorer** — Next.js dashboard + lineage explorer over the subgraph — *this repo*
+
 ## License
 
 MIT
