@@ -1,8 +1,8 @@
 # story-ip-explorer
 
-A [Next.js](https://nextjs.org) dashboard over the [`story-subgraph`](../story-subgraph) GraphQL API: ecosystem metrics plus an interactive IP **lineage explorer** (parent→derivative graph rendered with [Cytoscape](https://js.cytoscape.org/)).
+A [Next.js](https://nextjs.org) dashboard over the [`story-subgraph`](https://github.com/alexeymoskalev-devops/story-subgraph) GraphQL API: ecosystem metrics plus an interactive IP **lineage explorer** (parent→derivative graph rendered with [Cytoscape](https://js.cytoscape.org/)).
 
-It fulfils the "IP Graph Explorer" idea and complements [`story-ip-graph-mcp`](../story-ip-graph-mcp): the MCP server gives agents point-by-point on-chain reads, while this dashboard gives humans the aggregate metrics and the visual lineage view.
+It fulfils the "IP Graph Explorer" idea and complements [`story-ip-graph-mcp`](https://github.com/alexeymoskalev-devops/story-ip-graph-mcp): the MCP server gives agents point-by-point on-chain reads, while this dashboard gives humans the aggregate metrics and the visual lineage view.
 
 ## Two views
 
@@ -22,7 +22,7 @@ Metric cards plus leaderboard tables:
 
 A running `story-subgraph` GraphQL endpoint. Either:
 
-- **Local graph-node** — see the [`../story-subgraph`](../story-subgraph) README: `docker compose up -d`, then `graph create` / `graph deploy`, synced to chain head. The endpoint is then `http://localhost:8000/subgraphs/name/story-subgraph`.
+- **Local graph-node** — see the [`../story-subgraph`](https://github.com/alexeymoskalev-devops/story-subgraph) README: `docker compose up -d`, then `graph create` / `graph deploy`, synced to chain head. The endpoint is then `http://localhost:8000/subgraphs/name/story-subgraph`.
 - **Hosted deployment** — point at any deployed `story-subgraph` GraphQL URL.
 
 ## Setup
@@ -94,10 +94,15 @@ Time-series metrics (growth-over-time) need a `DailySnapshot` entity in `story-s
 
 ## Demo
 
-> **TODO:** Record the demo screenshot here.
->
-> Capture the Explorer lineage of `0x0b4df5a3d6dfe94dc8dc28f26006fa25638b351d`
-> (parent `0x9a90f1c5d4875181747c3585f01b5c065bea1f65`, license terms `1894`).
+Live against a local `story-subgraph` indexing aeneid.
+
+**Overview** — ecosystem metrics + leaderboards:
+
+![Overview dashboard](./docs/explorer-overview.png)
+
+**Lineage explorer** — parent `0x9a90f1c5…1f65` with its on-chain derivatives (license terms `1894`):
+
+![Lineage explorer](./docs/explorer-lineage.png)
 
 ## License
 
